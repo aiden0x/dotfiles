@@ -1,0 +1,18 @@
+#!/bin/sh
+
+bat=""
+for b in /sys/class/power_supply/BAT?*; do
+	[ -n "${bat:+x}" ] && bat="$bat "
+	cap="$(cat "$b/capacity" 2>&1)"
+	stat="$(cat "$b/status" 2>&1)"
+	case "$stat" in
+		Full) flag="F" ;;
+		Charging) flag="C" ;;
+		Discharging) [ "$cap" -le 20 ] && flag="!" || flag="" ;;
+		"Not charging") flag="N" ;;
+		Unknown) flag="?" ;;
+	esac
+	bat="$bat$cap%${flag:+ [$flag]}"
+done
+
+echo "$bat"

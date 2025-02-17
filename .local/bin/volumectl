@@ -1,0 +1,19 @@
+#!/bin/sh
+
+
+if [ $# -gt 0 ]; then
+		if [ "$1" = "toggle" ]; then
+				wpctl set-mute @DEFAULT_SINK@ toggle
+		else
+				wpctl set-volume @DEFAULT_SINK@ "$@"
+		fi
+		kill -44 "$(pidof dwmblocks)"
+else
+		VOL=$(wpctl get-volume @DEFAULT_SINK@ | awk '{printf "%d%", $2*100}')
+		MUTE=$(wpctl get-volume @DEFAULT_SINK@ | grep -o '\[MUTED\]')
+		if [ "$MUTE" = '[MUTED]' ]; then
+				echo "Muted"
+		else
+				echo "$VOL"
+		fi
+fi
