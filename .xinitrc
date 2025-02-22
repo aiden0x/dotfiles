@@ -8,5 +8,6 @@ xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal --out
 export _JAVA_AWT_WM_NONREPARENTING=1
 sxhkd &
 
-exec ssh-agent dwm
+[ -z "$SSH_AUTH_SOCK" ] && eval "$(ssh-agent -s)"
 
+exec dbus-run-session dwm

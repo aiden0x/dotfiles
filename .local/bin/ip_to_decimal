@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+
+const englishRegex = /^[A-Za-z0-9]*$/;
+
+export function serializeNext(next?: string | null): string {
+	if (!next || next[0] !== "/") {
+		return "/";
+	}
+	for (const route of next.split("/")) {
+		const r = route.trim();
+		if (!r || !englishRegex.test(r)) {
+			return "/";
+		}
+	}
+	return next;
+}

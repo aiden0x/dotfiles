@@ -14,7 +14,7 @@ alias grep='grep --color'
 alias q='exit'
 alias k='pkill'
 alias bctl='bluetoothctl'
-alias sd='sudo '
+alias sudo='sudo '
 alias nv='nvim'
 alias svstart='sudo s6-rc -u change'
 alias svstop='sudo s6-rc -d change'
@@ -26,7 +26,7 @@ alias reboot='loginctl reboot'
 alias sysleep='loginctl suspend -i'
 alias copy='xclip -selection clipboard'
 
-bindkey -s ^f 'nvim "$(fzf)"'
+bindkey -s ^f 'nvim "$(fzf)"\n'
 # Completion
 autoload -Uz compinit
 compinit
