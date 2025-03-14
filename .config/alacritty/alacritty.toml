@@ -1,10 +1,10 @@
 [general]
 import = [
-	"/home/alienus/.config/alacritty/keybinding.toml",
+	"~/.config/alacritty/keybinding.toml",
 ]
 
 [window]
-opacity = 0.7
+opacity = 0.85
 
 [scrolling]
 history = 10000
@@ -12,3 +12,31 @@ multiplier = 5
 
 [font]
 size = 10
+
+[colors.primary]
+background = '#191d24'
+foreground = '#d8dee9'
+
+[colors.normal]
+black = '#191d24'
+red = '#b74e58'
+green = '#97b67c'
+yellow = '#e7c173'
+blue = '#5e81ac'
+magenta = '#a97ea1'
+cyan = '#80b3b2'
+white = '#d8dee9'
+
+[colors.bright]
+black = '#434c5e'
+red = '#bf616a'
+green = '#a3be8c'
+yellow = '#ebcb8b'
+blue = '#81a1c1'
+magenta = '#b48ead'
+cyan = '#8fbcbb'
+white = '#e5e9f0'
+
+[colors.selection]
+text = '#e5e9f0'
+background = '#434c5e'

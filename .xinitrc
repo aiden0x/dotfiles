@@ -1,12 +1,14 @@
+#!/bin/sh 
+
 dwmblocks &
-picom &
+fastcompmgr -cC &
 xset s off -dpms &
-nitrogen --restore &
 pipewire &
 xbanish -t 5 &
-xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output HDMI-1-0 --mode 1360x768 --pos 1920x0 --rotate normal &
-export _JAVA_AWT_WM_NONREPARENTING=1
 sxhkd &
+(sleep 0.1; xrandr --output eDP-1 --primary --mode 1920x1080 --output HDMI-1-0 --mode 1360x768 --pos 1920x0 --right-of eDP-1; nitrogen --restore) &
+
+export _JAVA_AWT_WM_NONREPARENTING=1
 
 [ -z "$SSH_AUTH_SOCK" ] && eval "$(ssh-agent -s)"
 

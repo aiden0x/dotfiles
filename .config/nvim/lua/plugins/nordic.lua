@@ -5,10 +5,16 @@ return {
 		priority = 1000,
 		config = function()
 				require("nordic").setup({
-						on_highlight = function(highlights, palette) 
-								highlights.Normal = {
-										bg = "#000000"
-								}
+						transparent = {
+							bg = true,
+						},
+						on_highlight = function(highlights, palette)
+							--highlights.Normal = {
+							--	bg = palette.black0
+							--}
+							highlights.Visual = {
+								bg = palette.grey2
+							}
 						end,
 				})
 			require('nordic').load()

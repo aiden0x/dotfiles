@@ -6,7 +6,7 @@ static const Block blocks[] = {
 	{"", "netstat", 5, 0},
 	{"bat: ", "batstat", 5, 0},
 	{"mem: ", "free -h | awk '/^Mem/{print substr($3, 1, length($3)-1)}'", 5, 0},
-	{"cpu: ", "sensors | awk '/Package id/{print $4}'", 10, 0},
+	{"cpu: ", "printf '[%.2f%%] - [%s]' $(grep -o '^[^ ]*' /proc/loadavg) $(sensors | awk '/Package id/{print $4}')", 10, 0},
 	{"", "date '+%b %d (%a) %I:%M%p'", 10, 0},
 	{"vol: ", "volumectl", 0, 10}
 };
