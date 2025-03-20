@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+
+import sys
+import requests # *deperacted*
+
+def fetch_public_suffix_list():
+    url = "https://publicsuffix.org/list/public_suffix_list.dat"
+    response = requests.get(url)
+    if response.status_code != 200:
+        raise Exception("Failed to fetch Public Suffix List")
+    return response.text
+
+def parse_public_suffix_list(data):
+    suffixes = set()
+    for line in data.split("\n"):
+        line = line.strip()
+        if line and not line.startswith("//"):
+            suffixes.add(line)
+    return suffixes
+
+def extract_root_domain(domain, suffixes):
+    parts = domain.split(".")
+    for i in range(len(parts)):
+        candidate = ".".join(parts[i:])
+        if candidate in suffixes:
+            if i > 0:
+                return ".".join(parts[i-1:])
+            else:
+                return domain
+    return domain
+
+def main():
+    public_suffix_data = fetch_public_suffix_list()
+    suffixes = parse_public_suffix_list(public_suffix_data)
+
+    for line in sys.stdin:
+        domain = line.strip()
+        if domain:
+            root_domain = extract_root_domain(domain, suffixes)
+            print(root_domain)
+
+if __name__ == "__main__":
+    main()

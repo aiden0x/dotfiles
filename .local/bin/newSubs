@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+
+import subprocess, time
+
+def new_subs(domain, domain_path, notify_id):
+    # scanning new subdomains
+    subprocess.Popen("subfinder -d {} -o {}new_subs.txt -all -silent".format(domain, domain_path), shell=True)
+    time.sleep(600)
+    # compare the old and new and send the new to discord
+    subprocess.Popen("cat {}new_subs.txt | anew {} | notify -p discord -id {} -silent".format(domain_path, domain_path, notify_id), shell=True)
+    time.sleep(60)
+    # remove the new_subs file
+    subprocess.Popen("rm {}new_subs.txt".format(domain_path), shell=True)
+    time.sleep(1)
+
+while 1:
+    # run every 24 houre
+    new_subs("hilton.com", "/home/alienus/.hacking/bugHunting/hilton/subdomains/hilton.com/all_subs/hilton.com_subs.txt", "subs_notify")
+    time.sleep(86400)
+

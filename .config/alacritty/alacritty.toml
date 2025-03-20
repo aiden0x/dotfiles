@@ -3,12 +3,16 @@ import = [
 	"~/.config/alacritty/keybinding.toml",
 ]
 
+[env]
+term = "screen"
+
 [window]
 opacity = 0.85
 
 [scrolling]
 history = 10000
-multiplier = 5
+multiplier = 10 
+
 
 [font]
 size = 10

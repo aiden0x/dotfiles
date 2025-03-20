@@ -2,4 +2,5 @@
 bindings = [
 	{ key = "k", mods = "control|shift", action = "ScrollHalfPageUp" },
 	{ key = "j", mods = "control|shift", action = "ScrollHalfPageDown" },
+	{ key = "Return", mods = "Control|Shift", action = "SpawnNewInstance" },
 ]

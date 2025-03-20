@@ -1,0 +1,82 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m' 
+NC='\033[0m'
+
+tidy_status(){
+	local status=$1
+    if [[ $status =~ ^2 ]]; then
+        echo -e "${GREEN}[${status}]${NC}"
+    elif [[ $status =~ ^3 ]]; then
+        echo -e "${YELLOW}[${status}]${NC}"
+    elif [[ $status =~ ^4 ]]; then
+        echo -e "${RED}[${status}]${NC}"
+    elif [[ $status =~ ^5 ]]; then
+        echo -e "${RED}[${status}]${NC}"
+    else
+        echo -e "${BLUE}[${status}]${NC}"
+    fi	
+}
+
+echo -en "\n"
+status="$(curl -k -s -o /dev/null -iL -w "%{response_code}" "$1/$2")"
+echo -e "$(tidy_status "$status")   ${1}${2}"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" $1/%2e/$2)"
+echo -e "$(tidy_status "$status")   ${1}%2e/${2}"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" $1/$2/.)"
+echo -e "$(tidy_status "$status")   ${1}${2}/."
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" $1//$2//)"
+echo -e "$(tidy_status "$status")   ${1}/${2}//"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" $1/./$2/./)"
+echo -e "$(tidy_status "$status")   ${1}./${2}/./"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" -H "X-Original-URL: $2" $1/$2)"
+echo -e "$(tidy_status "$status")   ${1}${2} -H X-Original-URL: ${2}"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" -H "X-Custom-IP-Authorization: 127.0.0.1" $1/$2)"
+echo -e "$(tidy_status "$status")   ${1}${2} -H X-Custom-IP-Authorization: 127.0.0.1"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" -H "X-Forwarded-For: http://127.0.0.1" $1/$2)"
+echo -e "$(tidy_status "$status")   ${1}${2} -H X-Forwarded-For: http://127.0.0.1"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" -H "X-Forwarded-For: 127.0.0.1:80" $1/$2)"
+echo -e "$(tidy_status "$status")   ${1}${2} -H X-Forwarded-For: 127.0.0.1:80"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" -H "X-rewrite-url: $2" $1)"
+echo -e "$(tidy_status "$status")   ${1} -H X-rewrite-url: ${2}"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" $1/$2%20)"
+echo -e "$(tidy_status "$status")   ${1}${2}%20"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" $1/$2%09)"
+echo -e "$(tidy_status "$status")   ${1}${2}%09"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" $1/$2?)"
+echo -e "$(tidy_status "$status")   ${1}${2}?"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" $1/$2.html)"
+echo -e "$(tidy_status "$status")   ${1}${2}.html"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" $1/$2/?anything)"
+echo -e "$(tidy_status "$status")   ${1}${2}/?anything"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" $1/$2#)"
+echo -e "$(tidy_status "$status")   ${1}${2}#"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" -H "Content-Length:0" -X POST $1/$2)"
+echo -e "$(tidy_status "$status")   ${1}${2} -H Content-Length:0 -X POST"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" $1/$2/*)"
+echo -e "$(tidy_status "$status")   ${1}${2}/*"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" $1/$2.php)"
+echo -e "$(tidy_status "$status")   ${1}${2}.php"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" $1/$2.json)"
+echo -e "$(tidy_status "$status")   ${1}${2}.json"
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" -X TRACE $1/$2)"
+echo -e "$(tidy_status "$status")   ${1}${2}  -X TRACE"
+status="$(curl -s -o /dev/null -iL -w "%{http_code}" -H "X-Host: 127.0.0.1" $1/$2)"
+echo -e "$(tidy_status "$status")   ${1}${2} -H X-Host: 127.0.0.1"
+status="$(curl -s -o /dev/null -iL -w "%{http_code}" "$1/$2..;/")"
+echo -e "$(tidy_status "$status")   ${1}${2}..;/"
+status="$(curl -s -o /dev/null -iL -w "%{http_code}" " $1/$2;/")"
+echo -e "$(tidy_status "$status")   ${1}${2};/"
+#updated
+status="$(curl -k -s -o /dev/null -iL -w "%{http_code}" -X TRACE $1/$2)"
+echo -e "$(tidy_status "$status")   ${1}${2} -X TRACE"
+status="$(curl -s -o /dev/null -iL -w "%{http_code}" -H "X-Forwarded-Host: 127.0.0.1" $1/$2)"
+echo -e "$(tidy_status "$status")   ${1}${2} -H X-Forwarded-Host: 127.0.0.1"
+echo -en "\n"
+echo "Way back machine:"
+echo -en "\n"
+status="$(curl -s  https://archive.org/wayback/available?url=$1/$2 | jq -r '.archived_snapshots.closest | {available, url}')"
+

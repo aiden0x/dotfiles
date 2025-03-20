@@ -1,2 +1,14 @@
+super + Return
+	$TERMINAL
+
+super + p
+	dmenu_run
+
+super + {equal,minus,F1}
+	volumectl {5%+,5%-,toggle}
+
+super + BackSpace
+	flameshot gui
+
 super + control + l
 	slock

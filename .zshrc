@@ -7,6 +7,10 @@ git_branch() {
 # prompt
 PROMPT=' (%F{red}%c%f) %F{white}$(git_branch) %F{white}>%f%b '
 
+HISTFILE="$HOME/.cache/history.zsh"
+HISTSIZE=999999999
+SAVEHIST=999999999
+
 # aliases
 alias ls='ls --color -hF --group-directories-first'
 alias la='ls -la --color -hF --group-directories-first'
@@ -24,13 +28,38 @@ alias rsm='sudo rsm'
 alias pacman='sudo pacman'
 
 bindkey -s ^f 'nvim "$(fzf)"\n'
-# Completion
-autoload -Uz compinit
-compinit
-zstyle ':completion:*' menu select
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' 'r:|[._-]=**'
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
 _comp_options+=(globdots)
+autoload -Uz compinit
+zstyle ":completion:*" menu select
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' 'r:|[._-]=**'
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path $XDG_CONFIG_HOME/.zsh/cache
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
+zmodload zsh/complist
+[ "$(find "${ZDOTDIR:-$HOME}/.zcompdump" -mtime +1)" ] && compinit
+compinit -C
+
+bindkey -v
+KEYTIMEOUT=1
+
+bindkey -M menuselect "h" vi-backward-char
+bindkey -M menuselect "k" vi-up-line-or-history
+bindkey -M menuselect "l" vi-forward-char
+bindkey -M menuselect "j" vi-down-line-or-history
+bindkey -M menuselect "^[[Z" reverse-menu-complete
+bindkey -v "^?" backward-delete-char
+bindkey "^[[P" delete-char
+bindkey "^[[1;5D" backward-word
+bindkey "^[[1;5C" forward-word
+
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey "^e" edit-command-line
+bindkey -M vicmd "^e" edit-command-line
+bindkey -M vicmd "^[[P" vi-delete-char
+bindkey -M visual "^[[P" vi-delete
 
 typeset -A ZSH_HIGHLIGHT_STYLES
 ZSH_HIGHLIGHT_STYLES[default]='fg=white'
@@ -48,19 +77,7 @@ ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=white'
 ZSH_HIGHLIGHT_STYLES[autoremovable]='fg=black,bold'
 ZSH_HIGHLIGHT_STYLES[backtick]='fg=25'
 
-zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path $XDG_CONFIG_HOME/.zsh/cache
-
-export LS_COLORS="di=31"
-export XDG_CONFIG_HOME='/home/alienus/.config'
-
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-# Golang environment variables
-export EDITOR="nvim"
-export GOROOT=/usr/local/go
-export GOPATH=$HOME/go
-export GEMPATH=$HOME/.local/share/gem/ruby/3.3.0
-export PATH=$GEMPATH/bin:$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$PATH
-. "$HOME/.cargo/env"
+[ -r /usr/share/z/z.sh ] && . /usr/share/z/z.sh
