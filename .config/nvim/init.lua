@@ -11,3 +11,4 @@ vim.opt.background = "dark"
 vim.opt.termguicolors = true
 
 require("config.lazy")
+require("config.autocmd")
