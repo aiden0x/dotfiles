@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env node
 
 const englishRegex = /^[A-Za-z0-9]*$/;
 
-export function serializeNext(next?: string | null): string {
+export function serializeNext(next) {
 	if (!next || next[0] !== "/") {
 		return "/";
 	}

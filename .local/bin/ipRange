@@ -3,7 +3,7 @@
 import ipaddress
 import sys
 
-def expand_cidr(cidr_range):
+def expand_cidr(cidr_range): 
     try:
         network = ipaddress.ip_network(cidr_range, strict=False)
         for ip in network.hosts():
@@ -12,8 +12,11 @@ def expand_cidr(cidr_range):
         print("Invalid CIDR range. Example usage: python script.py 206.223.48.0/24")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 2 and not sys.stdin.readable():
         print("Usage: python script.py <CIDR>")
-    else:
-        expand_cidr(sys.argv[1])
+        sys.exit(1)
+    for line in sys.stdin.readlines():
+        expand_cidr(line.strip())
+    for arg in sys.argv:
+        expand_cidr(arg.strip())
 
