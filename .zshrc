@@ -26,6 +26,7 @@ alias sysleep='loginctl suspend -i'
 alias copy='xclip -selection clipboard'
 alias rsm='sudo rsm'
 alias pacman='sudo pacman'
+alias ip='ip --color=auto'
 
 bindkey -s ^f 'nvim "$(fzf)"\n'
 

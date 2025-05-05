@@ -7,3 +7,8 @@ autocmd({ "BufNewFile", "BufRead" }, {
 	pattern = { "todo.txt", "done.txt", "*.todo.txt", "*.done.txt" },
 	command = "setlocal ft=todotxt",
 })
+autocmd({ "BufNewFile", "BufRead" }, {
+	group = filetype_group,
+	pattern = { "*.ejs"  },
+	command = "setlocal ft=html",
+})

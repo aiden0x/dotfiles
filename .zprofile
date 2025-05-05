@@ -2,6 +2,7 @@ export EDITOR="nvim"
 export VISUAL="nvim"
 export TERMINAL="alacritty"
 export BROWSER="zen-browser"
+export _JAVA_AWT_WM_NONREPARENTING=1
 
 export LS_COLORS="di=31"
 export XDG_CONFIG_HOME="$HOME/.config"
