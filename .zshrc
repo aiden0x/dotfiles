@@ -2,7 +2,7 @@ setopt PROMPT_SUBST
 
 git_branch() {
 	local branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
-	[[ -n "$branch" ]] && echo " "
+	[[ -n "$branch" ]] && echo ""
 }
 # prompt
 PROMPT=' (%F{red}%c%f) %F{white}$(git_branch) %F{white}>%f%b '
