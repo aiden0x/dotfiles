@@ -1,0 +1,73 @@
+configuration {
+	display-run: "App-Launcher:";
+	font: "mono 12";
+}
+
+@theme "/dev/null"
+
+* {
+	bg: #191d24;
+	bg-alt: #191d24;
+
+	fg: #d8dee9;
+	fg-alt: #000000;
+
+	background-color: @bg;
+
+	border: 0;
+	margin: 0;
+	padding: 0;
+	spacing: 0;
+}
+
+window {
+	width: 33%;
+	border: 1px;
+	border-color: #5e81ac;
+}
+
+element {
+	padding: 12;
+	text-color: @fg;
+	background-color: @bg-alt;
+}
+
+element selected {
+	text-color: #5e81ac;
+	background-color: #3b4252;
+}
+
+element-text {
+	background-color: inherit;
+	text-color: inherit;
+	vertical-align: 0.5;
+	highlight: none;
+}
+
+entry {
+	background-color: @bg-alt;
+	padding: 12;
+	text-color: @fg;
+}
+
+inputbar {
+	children: [prompt, entry];
+}
+
+listview {
+	background-color: @bg-alt;
+	columns: 1;
+	lines: 8;
+}
+
+mainbox {
+	background-color: @bg;
+	children: [inputbar, listview];
+}
+
+prompt {
+	background-color: @bg;
+	enabled: true;
+	padding: 12 0 0 12;
+	text-color: @fg;
+}

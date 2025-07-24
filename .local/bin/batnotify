@@ -1,0 +1,59 @@
+#!/usr/bin/sh
+
+
+USER=$(who | awk '{print $1; exit}')
+[ -z "$USER" ] && exit 0
+
+USER_UID=$(id -u "$USER")
+USER_HOME=$(getent passwd "$USER" | cut -d: -f6)
+
+export DISPLAY=:0
+export XAUTHORITY=/home/aiden/.Xauthority
+
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+	if [ -s "/run/user/$UID/bus" ];then
+		export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$UID/bus"
+	elif command -v dbus-launch >/dev/null; then
+		eval "$(dbus-launch --sh-syntax --exit-with-session)"
+		export DBUS_SESSION_BUS_ADDRESS
+	fi
+fi
+
+WARNING_LEVEL=20
+BAT_LEVEL=$(acpi -b | awk '{print $NF}')
+BAT_DISCHARGING=$(acpi -b | grep -c "Discharging")
+
+EMPTY_FILE=/tmp/batempty
+FULL_FILE=/tmp/batfull
+
+case "$1" in
+	"battery")
+		sudo -u "$USER" \
+			DISPLAY="$DISPLAY" \
+			XAUTHORITY="$XAUTHORITY" \
+			DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
+			notify-send "Power State Changed" "Now Running on Battery Power" -i "battery"
+		;;
+	"ac")
+		sudo -u "$USER" \
+			DISPLAY="$DISPLAY" \
+			XAUTHORITY="$XAUTHORITY" \
+			DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
+			notify-send "Power State Changed" "Now Connected to AC Power" -i "battery"
+
+		;;
+esac
+
+if [ $BAT_DISCHARGING -eq 1 ] && [ -f $FULL_FILE ]; then
+	rm $FULL_FILE
+elif [ $BAT_DISCHARGING -eq 0 ] && [ -f $EMPTY_FILE ]; then
+	rm $EMPTY_FILE
+fi
+
+if [ $BAT_LEVEL -gt 95 ] && [ $BAT_DISCHARGING -eq 0 ] && [ ! -f $FULL_FILE ]; then
+	notify-send "Battery Charged" "Battery is fully charged." -i "battery" -r 9991
+	touch $FULL_FILE
+elif [ $BAT_LEVEL -le $WARNING_LEVEL ] && [ $BAT_DISCHARGING -eq 1 ] && [ ! -f $EMPTY_FILE ]; then
+	notify-send "Low Battery" "${BAT_LEVEL}% of battery remaining." -u critical -i "battery-alert"
+	touch $EMPTY_FILE
+fi

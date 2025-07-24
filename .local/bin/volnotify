@@ -1,0 +1,31 @@
+#!/bin/sh
+
+eww update volume-level=0
+eww update volume-text=""
+
+VOL=$(wpctl get-volume @DEFAULT_SINK@ | awk '{printf "%d", $2*100}')
+MUTE=$(wpctl get-volume @DEFAULT_SINK@ | grep -o '\[MUTED\]')
+
+case "$1" in
+	up)
+		wpctl set-volume @DEFAULT_SINK@ 5%+
+		;;
+	down)
+		wpctl set-volume @DEFAULT_SINK@ 5%-
+		;;
+	toggle)
+		wpctl set-mute @DEFAULT_SINK@ toggle
+		;;
+esac
+
+if [[ "$MUTE" == "[MUTED]" ]]; then
+	eww update volume-level=0
+	eww update volume-text="MUTED"
+else
+	eww update volume-level="$VOL"
+	eww update volume-text="Volume: $VOL%"
+fi
+
+eww open volume-notification
+sleep 1
+eww close volume-notification

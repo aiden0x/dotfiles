@@ -5,6 +5,7 @@
 #include<signal.h>
 #ifndef NO_X
 #include<X11/Xlib.h>
+#include<sys/types.h>
 #endif
 #ifdef __OpenBSD__
 #define SIGPLUS			SIGUSR1+1
@@ -23,6 +24,7 @@ typedef struct {
 	char* command;
 	unsigned int interval;
 	unsigned int signal;
+	pid_t pid;
 } Block;
 #ifndef __OpenBSD__
 void dummysighandler(int num);
@@ -34,7 +36,7 @@ void setupsignals();
 void sighandler(int signum);
 int getstatus(char *str, char *last);
 void statusloop();
-void termhandler();
+void termhandler(int signum);
 void pstdout();
 #ifndef NO_X
 void setroot();
@@ -53,7 +55,7 @@ static void (*writestatus) () = pstdout;
 static char statusbar[LENGTH(blocks)][CMDLENGTH] = {0};
 static char statusstr[2][STATUSLENGTH];
 static int statusContinue = 1;
-static int returnStatus = 0;
+// static int returnStatus = 0;
 
 //opens process *cmd and stores output in *output
 void getcmd(const Block *block, char *output)
@@ -185,9 +187,12 @@ void sighandler(int signum)
 	writestatus();
 }
 
-void termhandler()
+void termhandler(int signum)
 {
-	statusContinue = 0;
+	for (int i = 0;i < LENGTH(blocks); i++)
+		if (blocks[i].pid > 0)
+			kill(blocks[i].pid, SIGTERM);
+	exit(0);
 }
 
 int main(int argc, char** argv)

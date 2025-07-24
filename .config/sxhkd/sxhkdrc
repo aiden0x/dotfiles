@@ -2,7 +2,10 @@ super + Return
 	$TERMINAL
 
 super + p
-	dmenu_run
+	rofi -show run
+
+super + i
+	rofi -modi "clipboard:greenclip print" -show clipboard
 
 super + {equal,minus,F1}
 	volumectl {5%+,5%-,toggle}
@@ -12,3 +15,12 @@ super + BackSpace
 
 super + control + l
 	slock
+
+#super + equal
+	 #volnotify up
+
+#super + minus
+	 #volnotify down
+
+#super + F1
+	#volnotify toggle

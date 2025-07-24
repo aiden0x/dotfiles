@@ -1,0 +1,4 @@
+#!/bin/sh
+
+export WEBPASTE_TOKEN="aiden0x"
+exec ~/.root/hacking/tools/recon/webpaste/webpaste
