@@ -4,23 +4,17 @@ super + Return
 super + p
 	rofi -show run
 
-super + i
+super + v
 	rofi -modi "clipboard:greenclip print" -show clipboard
 
-super + {equal,minus,F1}
-	volumectl {5%+,5%-,toggle}
+super + {equal,minus}
+	volumectl {5%+,5%-}
+
+super + control + m
+	volumectl toggle
 
 super + BackSpace
 	flameshot gui
 
 super + control + l
 	slock
-
-#super + equal
-	 #volnotify up
-
-#super + minus
-	 #volnotify down
-
-#super + F1
-	#volnotify toggle

@@ -13,10 +13,9 @@ SAVEHIST=999999999
 
 # aliases
 alias ls='ls --color -hF --group-directories-first'
-alias la='ls -la --color -hF --group-directories-first'
+alias al='ls -la --color -hF --group-directories-first'
 alias grep='grep --color'
 alias q='exit'
-alias k='pkill'
 alias bctl='bluetoothctl'
 alias sudo='sudo '
 alias v='nvim'
@@ -83,3 +82,13 @@ source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 [ -r /usr/share/z/z.sh ] && . /usr/share/z/z.sh
+
+# pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+. "$HOME/.local/share/../bin/env"

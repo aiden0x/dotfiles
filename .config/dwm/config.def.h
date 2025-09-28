@@ -6,7 +6,7 @@ static const unsigned int gappx     = 8;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "DejaVu Sans:size=12" };
+static const char *fonts[]          = { "DejaVu Sans:size=12", "Font Awesome 6 Free:style=Solid:size=10" };
 static const char dmenufont[]       = "monospace:size=12";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
@@ -14,7 +14,7 @@ static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
 /* custom colors */
-static const char col_blue[]	    = "#5e81ac";
+static const char col_blue[]	    = "#364e6b";
 static const char col_black[]	    = "#191d24";
 static const char col_gray5[]	    = "#232b2b";
 static const char *colors[][3]      = {

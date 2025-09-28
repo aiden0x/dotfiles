@@ -10,5 +10,9 @@ vim.keymap.set({ "n", "v" }, "<leader>y", '"+y')
 vim.opt.background = "dark"
 vim.opt.termguicolors = true
 
+vim.opt.backup = false
+vim.opt.swapfile = false
+vim.opt.undofile = true
+
 require("config.lazy")
 require("config.autocmd")

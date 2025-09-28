@@ -9,6 +9,6 @@ autocmd({ "BufNewFile", "BufRead" }, {
 })
 autocmd({ "BufNewFile", "BufRead" }, {
 	group = filetype_group,
-	pattern = { "*.ejs"  },
+	pattern = { "*.ejs" },
 	command = "setlocal ft=html",
 })

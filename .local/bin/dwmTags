@@ -1,0 +1,130 @@
+#!/bin/bash
+# ~/.config/polybar/dwm-vacant-tags.sh
+# Script to detect and show only non-vacant dwm tags
+
+# Method 1: Using window properties and bit manipulation (most accurate)
+get_occupied_tags() {
+    local occupied_mask=0
+    local tag_mask
+    
+    # Get all window IDs
+    local windows=$(xdotool search --name ".*" 2>/dev/null)
+    
+    for wid in $windows; do
+        # Skip if window doesn't exist or is not managed by dwm
+        if ! xwininfo -id "$wid" >/dev/null 2>&1; then
+            continue
+        fi
+        
+        # Get window's desktop (tag)
+        local desktop=$(xprop -id "$wid" _NET_WM_DESKTOP 2>/dev/null | awk '{print $3}')
+        
+        # Skip invalid desktops
+        if [[ "$desktop" =~ ^[0-9]+$ ]] && [ "$desktop" -ge 0 ] && [ "$desktop" -le 8 ]; then
+            # Set bit for this tag
+            occupied_mask=$((occupied_mask | (1 << desktop)))
+        fi
+    done
+    
+    # Convert bitmask to tag numbers
+    local occupied_tags=()
+    for i in {0..8}; do
+        if [ $((occupied_mask & (1 << i))) -ne 0 ]; then
+            occupied_tags+=($((i + 1)))
+        fi
+    done
+    
+    echo "${occupied_tags[@]}"
+}
+
+# Method 2: Alternative using wmctrl (fallback)
+get_occupied_tags_wmctrl() {
+    wmctrl -l 2>/dev/null | awk '$2 >= 0 && $2 <= 8 {print $2 + 1}' | sort -nu
+}
+
+# Method 3: Using xwininfo and window tree analysis
+get_occupied_tags_xwininfo() {
+    local occupied=()
+    
+    # Get window tree and analyze each window
+    xwininfo -root -tree 2>/dev/null | grep -E "^\s+0x[0-9a-f]+" | while read line; do
+        local wid=$(echo "$line" | awk '{print $1}')
+        local desktop=$(xprop -id "$wid" _NET_WM_DESKTOP 2>/dev/null | awk '{print $3}')
+        
+        if [[ "$desktop" =~ ^[0-9]+$ ]] && [ "$desktop" -ge 0 ] && [ "$desktop" -le 8 ]; then
+            echo $((desktop + 1))
+        fi
+    done | sort -nu
+}
+
+# Get current active tag
+get_current_tag() {
+    local current=$(xprop -root _NET_CURRENT_DESKTOP 2>/dev/null | awk '{print $3}')
+    if [[ "$current" =~ ^[0-9]+$ ]]; then
+        echo $((current + 1))
+    else
+        echo "1"
+    fi
+}
+
+# Main detection logic
+detect_tags() {
+    local occupied_tags=($(get_occupied_tags))
+    local current_tag=$(get_current_tag)
+    
+    # Fallback methods if primary fails
+    if [ ${#occupied_tags[@]} -eq 0 ]; then
+        occupied_tags=($(get_occupied_tags_wmctrl))
+    fi
+    
+    if [ ${#occupied_tags[@]} -eq 0 ]; then
+        occupied_tags=($(get_occupied_tags_xwininfo))
+    fi
+    
+    # Always include current tag (even if empty)
+    if [[ ! " ${occupied_tags[@]} " =~ " ${current_tag} " ]]; then
+        occupied_tags+=($current_tag)
+    fi
+    
+    # Sort and remove duplicates
+    IFS=$'\n' occupied_tags=($(printf "%s\n" "${occupied_tags[@]}" | sort -nu))
+    unset IFS
+    
+    echo "OCCUPIED:${occupied_tags[*]}"
+    echo "CURRENT:$current_tag"
+}
+
+# Generate polybar output
+generate_polybar_output() {
+    local info=$(detect_tags)
+    local occupied=($(echo "$info" | grep "OCCUPIED:" | cut -d: -f2))
+    local current=$(echo "$info" | grep "CURRENT:" | cut -d: -f2)
+    
+    local output=""
+    for tag in $occupied; do
+        if [ "$tag" -eq "$current" ]; then
+            # Current/active tag
+            output+="%{F#ffffff B#444444 u#ffffff +u} $tag %{F- B- u- -u} "
+        else
+            # Occupied but not current
+            output+="%{F#cccccc} $tag %{F-} "
+        fi
+    done
+    
+    echo "${output% }"
+}
+
+# Debug mode
+if [ "$1" = "--debug" ]; then
+    echo "=== DWM Tag Detection Debug ==="
+    echo "Method 1 (bit manipulation): $(get_occupied_tags)"
+    echo "Method 2 (wmctrl): $(get_occupied_tags_wmctrl)"
+    echo "Method 3 (xwininfo): $(get_occupied_tags_xwininfo)"
+    echo "Current tag: $(get_current_tag)"
+    echo "Final detection:"
+    detect_tags
+    exit 0
+fi
+
+# Main execution
+generate_polybar_output
