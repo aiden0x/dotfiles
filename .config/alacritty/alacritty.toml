@@ -7,7 +7,7 @@ import = [
 term = "screen"
 
 [window]
-opacity = 0.9
+opacity = 0.8
 
 [scrolling]
 history = 10000
@@ -18,7 +18,7 @@ multiplier = 10
 size = 10
 
 [colors.primary]
-background = '#191d24'
+background = '#000001' #'#191d24'
 foreground = '#d8dee9'
 
 [colors.normal]

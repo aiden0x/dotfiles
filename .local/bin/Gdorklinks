@@ -163,3 +163,11 @@ echo -e "\n[+] composer.json\n"
 
 echo "https://github.com/search?q=%22$1%22+composer.json&type=Code"
 echo "https://github.com/search?q=%22$without_suffix%22+composer.json&type=Code"
+
+echo -e "\n[+] SSH\n"
+
+echo "https://github.com/search?type=code&q=%2Fssh%3A%5C%2F%5C%2F.*%3A.*%40.*$1%2F"
+
+echo -e "\n[+] FTP\n"
+
+echo "https://github.com/search?type=code&q=%2Fftp%3A%5C%2F%5C%2F.*%3A.*%40.*$1%2F"

@@ -1,14 +1,1 @@
-#!/bin/sh
-path="$HOME/.tools/burpsuite-3.2"
-loader="$path/burploader.jar"
-mainjar="$path/burpsuite_pro_v2024.3.1.2.jar" 
-
-/usr/lib/jvm/java-21-openjdk/bin/java \
-	--add-opens=java.desktop/javax.swing=ALL-UNNAMED \
-	--add-opens=java.base/java.lang=ALL-UNNAMED \
-	--add-opens=java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED \
-	--add-opens=java.base/jdk.internal.org.objectweb.asm.tree=ALL-UNNAMED \
-	--add-opens=java.base/jdk.internal.org.objectweb.asm.Opcodes=ALL-UNNAMED \
-	-javaagent:"$loader" \
-	-noverify \
-	-jar "$mainjar"
+java --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED --add-opens=java.base/jdk.internal.org.objectweb.asm.tree=ALL-UNNAMED --add-opens=java.base/jdk.internal.org.objectweb.asm.Opcodes=ALL-UNNAMED -javaagent:/home/aiden/.root/hacking/tools/Burpsuite-Professional/loader.jar -noverify -jar /home/aiden/.root/hacking/tools/Burpsuite-Professional/burpsuite_pro_v2025.jar &
