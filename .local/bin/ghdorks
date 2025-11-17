@@ -1,0 +1,277 @@
+#!/bin/bash
+
+usage() {
+	cat << EOF
+
+Usage: ghdorks -d [domain]
+
+Options:
+-h	Display help message.
+-d	Specific domain search for.
+-b	Open specific category in the browser.
+	(keys-tokens, aws, passwords, files, protocols).
+-t	Set delay (seconds) between opening URLs in broswer to avoid rate-limiting. (default 0.5)
+-s	Don't print the org URLs.
+EOF
+	exit 1
+}
+
+urlencode() {
+	local string="${1}"
+	local strlen=${#string}
+	local encoded=""
+	local pos c o
+
+		for (( pos=0; pos<strlen; pos++ )); do
+			c=${string:$pos:1}
+			case "$c" in 
+				[-_.~a-zA-Z0-9] ) o="${c}" ;;
+				* ) printf -v o '%%%02x' "'$c"
+			esac
+			encoded+="${o}"
+		done
+		echo "${encoded}"
+	}
+
+generate_dorks() {
+	local target="$1"
+	local without_suffix=$(echo "$target" | cut -d . -f1)
+	local category="$2"
+	local open_browser="$3"
+	local delay="$4"
+	local supress_short="$5"
+
+	outURL() {
+		local use_full="$1"
+		local host
+
+		if [ "$use_full" == "true" ]; then
+			host="\"${target}\""
+		else
+			host="\"${without_suffix}\""
+		fi
+
+		encoded=$(urlencode "${host} ${term}")
+		url="https://github.com/search?q=${encoded}&type=code"
+		echo -e "${url} [${RED}${term}${RESET}]"
+
+		if [ "$open_browser" == "true" ]; then
+			if command -v xdg-open >/dev/null 2>&1; then
+				xdg-open "$url" 2>/dev/null &
+			else
+				echo "Error: failed to open the browser."
+				exit 1
+			fi
+		sleep "${delay}"
+		fi
+	}
+
+	local api_terms=(
+		"api_key"
+		"apikey"
+		"api_token"
+		"api_secret"
+		"api-key"
+		"apidocs"
+		"OPENAI_API_KEY"
+		"github_token"
+		"SECRET_KEY"
+		"access_key"
+		"access_token"
+		"app_key"
+		"app_secret"
+		"appkey"
+		"appkeysecret"
+		"applicaton_key"
+		"appsecret"
+		"auth_token"
+		"authorizationToken"
+		"authorization_token"
+		"client_secret"
+		"codecov_token"
+		"consumer_key"
+		"encryption_key"
+		"gh_token"
+		"github_key"
+		"secret"
+		"PWD"
+		"credentials"
+	)
+
+	local aws_terms=(
+		"amazonaws"
+		"aws_access"
+		"aws_access_key_id"
+		"aws_key"
+		"aws_secret"
+		"aws_token"
+		"AWSSecretKey"
+		"AWS SECRET"
+		"AWS_SECRET_ACCESS_KEY"
+		"S3_ACCESS_KEY_ID"
+		"S3_BUCKET"
+		"S3_ENDPOINT"
+		"S3_SECRET_ACCESS_KEY"
+		"s3cfg"
+		"s3.yml"
+		"s3.json"
+	)
+
+	local password_terms=(
+		"password"
+		"passwd"
+		"bashrc password"
+		"htpasswd"
+		)
+	
+	local file_terms=(
+		"composer.json"
+		"DockerFile"
+		"pem private"
+		".sls"
+		".bash_history"
+		"diploy.rake"
+		"beanstalked.yml"
+		".exs"
+		".env"
+		".ftpconfig"
+		".npmrc"
+		".pgpass"
+		".remote-sync.json"
+		"config"
+		"connections.xml"
+		"deployment-config.json"
+		"dhcpd.conf"
+		"dockercfg"
+		"id_rsa"
+		"id_dsa"
+		"logins.json"
+		"robomongo.json"
+		"settings.py"
+		"wp-config"
+		"sshd_cofing"
+		"sql"
+		"secrets.yml"
+		"express.conf"
+		"master.key"
+		"sftp.json"
+		)
+
+		local protocol_terms=(
+			"/ssh:\/\/.*:.*@.*"
+			"/ftp:\/\/.*:.*@.*"
+			"smtp"
+			)
+
+
+	local RED='\033[31m'
+	local RESET='\033[0m'
+
+	if [ "$category" == "keys-tokens" ] || [ -z "$category" ]; then
+		echo -e "\n[+] Keys and Tokens\n"
+		for term in "${api_terms[@]}"; do
+			outURL true
+		done
+
+		if [ "$supress_short" != "true" ]; then
+			echo ""
+			for term in "${api_terms[@]}"; do
+				outURL false
+			done
+		fi
+	fi
+
+	if [ "$category" == "aws" ] || [ -z "$category" ]; then
+		echo -e "\n[+] AWS\n"
+		for term in "${aws_terms[@]}"; do
+			outURL true
+		done
+		if [ "$supress_short" != "true" ]; then
+			echo ""
+			for term in "${api_terms[@]}"; do
+				outURL false
+			done
+		fi
+
+	fi
+
+	if [ "$category" == "password" ] || [ -z "$category" ]; then
+		echo -e "\n[+] Passwords\n"
+		for term in "${password_terms[@]}"; do
+			outURL true
+		done
+		if [ "$supress_short" != "true" ]; then
+			echo ""
+			for term in "${password_terms[@]}"; do
+				outURL false
+			done
+		fi
+	fi
+
+	if [ "$category" == "files" ] || [ -z "$category" ]; then
+		echo -e "\n[+] Files\n"
+		for term in "${file_terms[@]}"; do
+			outURL true
+		done
+		if [ "$supress_short" != "true" ]; then
+			echo ""
+			for term in "${file_terms[@]}"; do
+				outURL false
+			done
+		fi
+	fi
+
+	if [ "$category" == "protocols" ] || [ -z "$category" ]; then
+		echo -e "\n[+] Protocols"
+		for term in "${protocol_terms[@]}"; do
+			outURL true
+		done
+		if [ "$supress_short" != "true" ]; then
+			echo ""
+			for term in "${protocol_terms[@]}"; do
+				outURL false
+			done
+		fi
+	fi
+}
+
+domain=""
+category=""
+open_browser="false"
+delay="1"
+supress_short="false"
+
+while getopts "d:b:t:sh" opt; do
+	case $opt in
+		d)
+			domain="$OPTARG"	
+			;;
+		b)
+			category="$OPTARG"
+			open_browser="true"
+			;;
+		t)
+			delay="$OPTARG"
+			;;
+		s)
+			supress_short="true"
+			;;
+		h)
+			usage
+			;;
+		\?)
+			echo -e "Invalid option: -$OPTARG" >&2
+			usage
+			;;
+	esac
+done
+
+if [ -z "$domain" ]; then
+	usage
+fi
+
+if [ -n "$category" ] && [ "$category" != "keys-tokens" ] && [ "$category" != "aws" ]; then
+	echo -e "Invalid category: $category, use -h for help."
+fi
+
+generate_dorks "$domain" "$category" "$open_browser" "$delay" "$supress_short"

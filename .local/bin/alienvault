@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if [[ -z "$1" ]]; then
+	echo "Usage: $0 <domain>"
+	exit 1
+fi
+
+DOMAIN=$1
+API="https://otx.alienvault.com/api/v1/indicators"
+PAGE=1
+
+while true; do
+	res=$(curl -s "${API}/hostname/${DOMAIN}/url_list?limit=500&page=${PAGE}")
+	urls=$(echo "$res" | jq -r '.url_list[]?.url')
+
+	if [[ -z "$urls" ]];then
+		break
+	fi
+	echo "$urls"
+
+	count=$(echo "$urls" | wc -l)
+
+	if (( count < 500 )); then
+		break
+	fi
+
+	PAGE=$((PAGE + 1))
+done

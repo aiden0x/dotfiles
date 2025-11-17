@@ -19,6 +19,11 @@ echo -e "\n[+] dockercfg\n"
 echo "https://github.com/search?q=%22$1%22+dockercfg&type=Code"
 echo "https://github.com/search?q=%22$without_suffix%22+dockercfg&type=Code"
 
+echo -e "\n[+] DockerFile\n"
+
+echo "https://github.com/search?q=%22$1%22+DockerFile&type=Code"
+echo "https://github.com/search?q=%22$without_suffix%22+DockerFile&type=Code"
+
 echo -e "\n[+] pem private\n"
 
 echo "https://github.com/search?q=%22$1%22+pem%20private&type=Code"
@@ -33,6 +38,16 @@ echo -e "\n[+] aws_access_key_id\n"
 
 echo "https://github.com/search?q=%22$1%22+aws_access_key_id&type=Code"
 echo "https://github.com/search?q=%22$without_suffix%22+aws_access_key_id&type=Code"
+
+echo -e "\n[+] aws_access_secret_key\n"
+
+echo "https://github.com/search?q=%22$1%22+aws_access_secret_key&type=Code"
+echo "https://github.com/search?q=%22$without_suffix%22+aws_access_secret_key&type=Code"
+
+echo -e "\n[+] OPENAI_API_KEY\n"
+
+echo "https://github.com/search?q=%22$1%22+OPENAI_API_KEY&type=Code"
+echo "https://github.com/search?q=%22$without_suffix%22+OPENAI_API_KEY&type=Code"
 
 echo -e "\n[+] s3cfg\n"
 

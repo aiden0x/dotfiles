@@ -11,7 +11,7 @@ HISTFILE="$HOME/.cache/history.zsh"
 HISTSIZE=999999999
 SAVEHIST=999999999
 
-# aliases
+# SYS 
 alias ls='ls --color -hF --group-directories-first'
 alias al='ls -la --color -hF --group-directories-first'
 alias grep='grep --color'
@@ -27,6 +27,19 @@ alias rsm='sudo rsm'
 alias pacman='sudo pacman'
 alias ip='ip --color=auto'
 alias img='nsxiv'
+alias wcc='wc -l'
+# GitHub
+alias gst='git status'
+alias gdd='git add'
+alias gcmmt='git commit'
+alias gpsh='git push'
+alias gc='git clone'
+# Fan Speed
+alias 11fan='nbfc set -s 100'
+alias 10fan='nbfc set -s 80'
+alias 01fan='nbfc set -s 60'
+alias 00fan='nbfc set -s 40'
+alias autofan='nbfc set -a'
 
 bindkey -s ^f 'nvim "$(fzf)"\n'
 
@@ -90,5 +103,3 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
-
-. "$HOME/.local/share/../bin/env"
