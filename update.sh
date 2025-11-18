@@ -13,5 +13,10 @@ cp -rf ~/.config/pipewire ~/.root/repos/dotfiles/.config
 cp -rf ~/.config/nvim ~/.root/repos/dotfiles/.config
 cp -rf ~/.config/slock ~/.root/repos/dotfiles/.config
 cp -rf ~/.config/rofi ~/.root/repos/dotfiles/.config
+cp -rf ~/.config/polybar ~/.root/repos/dotfiles/.config
+cp -rf ~/.config/procps ~/.root/repos/dotfiles/.config
+cp -rf ~/.config/picom ~/.root/repos/dotfiles/.config
+cp -rf ~/.config/nitrogen ~/.root/repos/dotfiles/.config
+cp -rf ~/.config/dconf ~/.root/repos/dotfiles/.config
 
 echo "all done mate, bye"
